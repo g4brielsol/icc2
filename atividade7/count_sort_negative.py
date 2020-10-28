@@ -33,4 +33,4 @@ def counting_sort(array:list) -> list:
             index += 1
     print(array)
 
-counting_sort([500,-50,400,0,10,300,2,20,-1,-2,-3,-5])
+counting_sort([500,-50,400,0,-1,-2,0,10,300,2,20,-1,-2,-3,-5])
