@@ -13,7 +13,7 @@ def counting_sort(array:list) -> list:
         if number > max_element:
             max_element = number
 
-    #offset max element by minimum value, it will make it bigger
+    #range of values to be put in the counter list
     max_element = max_element - min_element
 
     # make list with max element length   
@@ -33,4 +33,4 @@ def counting_sort(array:list) -> list:
             index += 1
     print(array)
 
-counting_sort([500,-50,400,0,-1,-2,0,10,300,2,20,-1,-2,-3,-5])
+counting_sort([3,2,1,0,10,13,2,14,25,2,3,1])
