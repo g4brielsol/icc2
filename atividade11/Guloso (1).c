@@ -12,18 +12,18 @@ void print(char** lista, int N){
     }
 }
 
-void palavra(int N, char*** s){
+void palavra(int N, char** s){
 
     for(int i = 0; i < N; i++){
-        (*s)[i] = NULL;
+        s[i] = NULL;
         int pos = 0;
         do{
-           (*s)[i] = realloc((*s)[i], pos + 1);  //aloca a palavra de forma dinamica
-           (*s)[i][pos] = (char)fgetc(stdin);
+           s[i] = realloc(s[i], pos + 1);  //aloca a palavra de forma dinamica
+           s[i][pos] = (char)fgetc(stdin);
            pos++;
 
-        } while((*s)[i][pos - 1] != '\n');
-        (*s)[i][pos - 1] = '\0';
+        } while(s[i][pos - 1] != '\n');
+        s[i][pos - 1] = '\0';
     }
 }
 
@@ -104,35 +104,19 @@ void overlap(int retorno[], char* s1, char* s2){
     return;
 }
 
-void arruma_lista(char*** lista, int pos, char* s_copy){
+void arruma_lista(char** lista, int pos, char* s_copy){
 
-    if((*lista)[0] == NULL){
-        (*lista)[0] = realloc((*lista)[0], strlen(s_copy)+1);
-        strcpy((*lista)[0], s_copy);
+    if(lista[0] == NULL){
+        lista[0] = realloc(lista[0], strlen(s_copy)+1);
+        strcpy(lista[0], s_copy);
     }else{
-
-        //encontra o primeiro NULL da lista
+        //encontra o primeiro NULL da lista e realoca
         for(int i = pos; i > 0; i--){
-            // Condicao extra para quando (*lista)[i-1] for NULL
-            if((*lista)[i-1] == NULL)
-            {
-                //Nao sei o que colocar nesse if e alterar no else e apos o for
-                (*lista)[i-1] = realloc((*lista)[i-1], strlen(s_copy)+1);
-                strcpy((*lista)[i-1], s_copy);
-            }
-            else
-            {
-                // Operacao antiga do codigo do Joao sem o if else
-                // Nao sei se esta certo
-                (*lista)[i] = realloc((*lista)[i], strlen((*lista)[i-1])+1);
-                strcpy((*lista)[i], (*lista)[i-1]);
-            }
+            lista[i] = realloc(lista[i], strlen(lista[i-1])+1);
+            strcpy(lista[i], lista[i-1]);
         }
-
-        // Operacao antiga do codigo do Joao
-        // Nao sei se esta certo
-        (*lista)[0] = realloc((*lista)[0], strlen(s_copy)+1);
-        strcpy((*lista)[0], s_copy);
+        lista[0] = realloc(lista[0], strlen(s_copy)+1);
+        strcpy(lista[0], s_copy);
     }
 }
 
@@ -165,56 +149,70 @@ int concatenar(char** lista, int N, int it){
     //nao acrescenta em nada o problema, pois nao aumentara nem um caracter em nenhum momento do programa
     //entao podemos eliminar
 
-    int min;
-    if(max_overlap[2] > max_overlap[3]){
-        min = max_overlap[3];
-    }else{
-        min = max_overlap[2];
-    }
-
     if(max_overlap[1] == 1){
 
         char* s_copy;
 
         if(s1_len > s2_len){
-            //printf("\noverlap 1 s1 maior %d\n", it);
+
             s_copy = (char*)calloc(s1_len+1, sizeof(char));
             lista[max_overlap[3]] = NULL;
             strcpy(s_copy, lista[max_overlap[2]]);
-            //printf("s copy %s\n", s_copy);
             lista[max_overlap[2]] = NULL;
 
-            arruma_lista(&lista, min, s_copy);
+            int min;
+            for(int i = 0; i < N; i++){
+                if(lista[i] == NULL){
+                    min = i;
+                    break;
+                }
+            }
+
+            arruma_lista(lista, min, s_copy);
 
             //free(s_copy);
 
         }else{
-            //printf("\noverlap 1 s2 maior %d\n", it);
+
             s_copy = (char*)calloc(s2_len+1, sizeof(char));
             lista[max_overlap[2]] = NULL;
             strcpy(s_copy, lista[max_overlap[3]]);
             lista[max_overlap[3]] = NULL;
 
-            arruma_lista(&lista, min, s_copy);
+            int min;
+            for(int i = 0; i < N; i++){
+                if(lista[i] == NULL){
+                    min = i;
+                    break;
+                }
+            }
+
+            arruma_lista(lista, min, s_copy);
 
             //free(s_copy);
         }
         //print(lista, N);
     }else{
-        //caso final-comeï¿½o
-        //printf("\n overlap dif 1: %d\n", it);
-        //printf("s1_len - max_overlap[0] + 1: %d\n", s1_len - max_overlap[0] + 1);
-        
-        // mudei o tamanho do calloc para tamanho de lista[max_overlap[2]] + tamanho de lista[max_overlap[3]
-        // tava dando segfault no strcat(s_copy, lista[max_overlap[3]])  
+        //caso final-começo
+
         char* s_copy = (char*)calloc((strlen(lista[max_overlap[2]]) + strlen(lista[max_overlap[3]])  + 1),sizeof(char));
+
         strncpy(s_copy, lista[max_overlap[2]], s1_len - max_overlap[0]);
+
         //concatenando e limpando as ja usadas
         strcat(s_copy, lista[max_overlap[3]]);
         lista[max_overlap[3]] = NULL;
         lista[max_overlap[2]] = NULL;
 
-        arruma_lista(&lista, max_overlap[2], s_copy);
+        int min;
+        for(int i = 0; i < N; i++){
+            if(lista[i] == NULL){
+                min = i;
+                break;
+            }
+        }
+
+        arruma_lista(lista, min, s_copy);
 
         //free(s_copy);
 
@@ -232,7 +230,7 @@ int main(void){
     scanf("%d", &N);
     getchar();
     char** lista = (char**)malloc(N*sizeof(char*));
-    palavra(N, &lista);
+    palavra(N, lista);
 
     //numero de iteracoes na funcao de concatenar
     int it = 0;
