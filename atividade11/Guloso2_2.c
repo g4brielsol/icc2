@@ -118,25 +118,37 @@ void arruma_lista(char*** lista, int pos, char* s_copy){
         printf("\narrumar lista else\n");
         //encontra o primeiro NULL da lista
         for(int i = pos; i > 0; i--){
+            if((*lista)[i-1] == NULL)
+            {
+                (*lista)[i-1] = realloc((*lista)[i-1], strlen((*lista)[0])+1);
+                printf("lista[i] len %d\n", strlen((*lista)[i-1]));
+                printf("s_copy len %d\n", strlen(s_copy));
+                strcpy((*lista)[i-1], *lista[0]);
+                printf("lista 0 %s\n", (*lista)[0]);
+                printf("s_copy %s\n", s_copy);
+            }
+            else
+            {
             (*lista)[i] = realloc((*lista)[i], strlen((*lista)[i-1])+1);
+            printf("i: %d\n", i);
             printf("(*lista)[i-1] %s\n", (*lista)[i-1]);
-            strcpy((*lista)[i], (*lista)[i-1]);
             printf("(*lista)[i] %s\n", (*lista)[i]);
+            printf("str len (*lista)[i-1] %d\n", strlen((*lista)[i-1]));
+            printf("str len (*lista)[i] %d\n", strlen((*lista)[i]));
+            strcpy((*lista)[i], (*lista)[i-1]);
+            printf("copia (*lista)[i] %s\n", (*lista)[i]);
+            printf("str len copia (*lista)[i] %d\n", strlen((*lista)[i]));
+            }
         }
-        if((*lista)[0])
-        {
-            printf("teste 1\n");
-            printf("(*lista)[0] %d\n", (*lista)[0]);
-        }
-        else
-        {
-            printf("teste 2\n");
-            printf("s_copy %s\n", s_copy);
-        }
-        (*lista)[0] = realloc((*lista)[0], strlen(s_copy)+1);
-        printf("(*lista)[0] %s\n", (*lista)[0]);
-        printf("s_copy %s\n", s_copy);
-        strcpy((*lista)[0], s_copy);
+        //printf("(*lista)[0] %s\n", (*lista)[0]);
+        //printf("str len (*lista)[0] %d\n", strlen((*lista)[0]));        
+        //printf("s_copy %s\n", s_copy);
+        //printf("str len s_copy %d\n", strlen(s_copy));
+        //(*lista)[0] = realloc((*lista)[0], strlen(s_copy)+1);
+        //printf("(*lista)[0] %s\n", (*lista)[0]);
+        //printf("s_copy %s\n", s_copy);
+        //strcpy((*lista)[0], s_copy);
+        //printf("(*lista)[0] %s\n", (*lista)[0]);
     }
 }
 
